@@ -50,7 +50,19 @@ function writeNote(note) {
     var newNote = req.body;
     note.push(newNote);
     writeNote(note);
+    res.send()
   });
+
+  //Display saved notes:
+
+
+
+//Delete notes:
+// app.delete("/api/notes/:id", function (req, res) {
+//     notes.splice(req.params.id, 1);
+//     updatedNote();
+//     console.log("note with id " + req.params.id);
+//   });
 
 app.listen(PORT, function () {
   console.log("App listening on PORT " + PORT);
