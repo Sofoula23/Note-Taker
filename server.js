@@ -2,8 +2,9 @@
 const express = require("express");
 const fs = require("fs")
 const path = require("path");
-var jsonFile = require("./db/db.json");
+// var jsonFile = require("./db/db.json");
 const { v4: uuidv4 } = require("uuid");
+var note = []
 
 const app = express();
 //Initial Port
@@ -25,9 +26,9 @@ app.get("/notes", function (req, res) {
 
 //ReadFile
 fs.readFile('./db/db.json',  "utf-8", (err, data) => {
-  note = JSON.parse(data);
   if (err) throw err;
   console.log(data);
+  note = JSON.parse(data);
 });
 // Api:
 app.get("/api/notes", function(req, res) {
@@ -35,11 +36,12 @@ app.get("/api/notes", function(req, res) {
   });
 
 function writeNote(note) {
-    fs.writeFile("./db/db.json", JSON.stringify(note), (err) =>
-  err ? console.error(err) : console.log('Success!')
-  );
+    fs.writeFile("./db/db.json", JSON.stringify(note), (err) => {
+   if (err) throw err; 
+   return true
+  });
   }
-  //POST
+  //POST & object for note id 
   app.post("/api/notes", function(req, res) {
     var noteId = uuidv4();
     var newNote = {
@@ -47,26 +49,26 @@ function writeNote(note) {
         title: req.body.title,
         text: req.body.text
     }
-    fs.readFile("./db/db.json", "utf-8", (err, data) =>{
+    
         note.push(newNote);
         writeNote(note);
         res.send(newNote) 
-    })
+    
   });
 //Delete notes:
 app.delete("/api/notes/:id", (req, res) => {
     const noteId = req.params.id;
     console.log(noteId);
-    fs.readFile("./db/db.json", "utf8", (err, data) => {
-        if (err) throw err;
-        var notes = JSON.parse(data);
-        var filterNotes = notes.filter(note => note.id != noteId);
-        
-        fs.writeFile("./db/db.json", JSON.stringify(filterNotes, null, 2), err =>{
-            if (err) throw err;
-            res.send();
-        })
-    })
+    
+        // var notes = JSON.parse(data);
+        // var filterNotes = notes.filter(note => note.id != noteId);
+        note.splice(noteId, 1);
+
+        fs.writeFile("db/db.json", JSON.stringify(note, "\t"), (err) => {
+          if (err) throw err;
+          return true;
+        });
+    
  
   });
  
