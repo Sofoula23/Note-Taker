@@ -18,8 +18,8 @@ app.use(express.static("public"));
 // app.use("/api", apiRoutes);
 // app.use("/", htmlRoutes);
 
-// Routes
-// =============================================================
+
+
 // HTML routes:
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "index.html"));
@@ -27,9 +27,7 @@ app.get("/", function (req, res) {
 app.get("/notes", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
-app.get("/api/notes", function(req, res) {
-  res.json(note)
-});
+
 
 //ReadFile
 fs.readFile('./db/db.json',  "utf-8", (err, data) => {
@@ -37,6 +35,10 @@ fs.readFile('./db/db.json',  "utf-8", (err, data) => {
   if (err) throw err;
   console.log(data);
 });
+// Api:
+app.get("/api/notes", function(req, res) {
+    res.json(note)
+  });
 
 function writeNote(note) {
     fs.writeFile("./db/db.json", JSON.stringify(note), (err) =>
