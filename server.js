@@ -1,0 +1,55 @@
+// These are the dependencies
+const express = require("express");
+const fs = require("fs")
+const path = require("path");
+var jsonFile = require("./db/db.json");
+// const apiRoutes = require("./routes/apiRoutes")
+// const htmlRoutes = require("./routes/htmlRoutes")
+
+const app = express();
+//Initial Port
+const PORT = process.env.PORT || 3000; 
+// Sets up Express app to handle body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+//Static files and resources
+app.use(express.static("public"));
+
+// app.use("/api", apiRoutes);
+// app.use("/", htmlRoutes);
+
+// Routes
+// =============================================================
+// HTML routes:
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+app.get("/notes", function (req, res) {
+  res.sendFile(path.join(__dirname, "/public/notes.html"));
+});
+app.get("/api/notes", function(req, res) {
+  res.json(note)
+});
+
+//ReadFile
+fs.readFile('./db/db.json',  "utf-8", (err, data) => {
+  note = JSON.parse(data);
+  if (err) throw err;
+  console.log(data);
+});
+
+function writeNote(note) {
+    fs.writeFile("./db/db.json", JSON.stringify(note), (err) =>
+  err ? console.error(err) : console.log('Success!')
+  );
+  }
+  //POST
+  app.post("/api/notes", function(req, res) {
+    var newNote = req.body;
+    note.push(newNote);
+    writeNote(note);
+  });
+
+app.listen(PORT, function () {
+  console.log("App listening on PORT " + PORT);
+});
